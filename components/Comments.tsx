@@ -1,0 +1,39 @@
+import React from "react";
+import { useThreads } from "@liveblocks/react/suspense";
+import { Composer, Thread } from "@liveblocks/react-ui";
+import { useIsThreadActive } from "@liveblocks/react-lexical";
+import { cn } from "@/lib/utils";
+
+const ThreadWrapper = ({ thread }: ThreadWrapperProps) => {
+  const isActive = useIsThreadActive(thread.id);
+  return (
+    <Thread
+      thread={thread}
+      data-state={isActive ? "active" : "inactive"}
+      className={cn(
+        "comment-thread border",
+        isActive && "!border-blue-500 shadow-md",
+        thread.resolved && "opacity-40"
+      )}
+    />
+  );
+};
+
+const Comments = () => {
+  const { threads } = useThreads();
+
+  return (
+    <div className="comments-container">
+      <Composer
+        className="comment-composer w-full min-h-[100px] p-3 border rounded-lg"
+        style={{ minHeight: "100px", width: "100%" }}
+      />
+
+      {threads.map((thread) => (
+        <ThreadWrapper key={thread.id} thread={thread} />
+      ))}
+    </div>
+  );
+};
+
+export default Comments;
